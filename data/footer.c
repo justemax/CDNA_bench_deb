@@ -33,7 +33,8 @@ int main(void)
 
 	hipMemcpy(totalTime, totalTime_d, sizeof(clock_t), hipMemcpyDeviceToHost);
 
-	asm_add<<<1, 1, 0,  0>>>(totalTime_d); 
+	for(int i =0; i < 10000; i++)
+		asm_add<<<1, 1, 0,  0>>>(totalTime_d); 
 //	checkHipError(hipLaunchKernelGGL(asm_add, 1, 1, 0, 0,  d_a, d_b, totalTime_d), "error"); 
 
 	//hipDeviceSynchronize();
