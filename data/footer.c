@@ -1,7 +1,6 @@
 	stop = clock();
 
 
-	printf("%ld, %ld, %f\n", start, stop, (double)(stop-start)/NBREP);
 	*totalTime = stop-start;
 
 }
@@ -33,13 +32,16 @@ int main(void)
 	hipMemcpy(totalTime_d, totalTime, sizeof(clock_t), hipMemcpyDeviceToHost);
 	hipDeviceSynchronize();
 
+	clock_t total_cycle = 0;
+
 	for(int i =0; i < 1000; i++)
+	{
 		asm_add<<<1, 1, 0,  0>>>(totalTime_d); 
-
-	hipDeviceSynchronize();
-	hipMemcpy(totalTime, totalTime_d, sizeof(clock_t), hipMemcpyHostToDevice);
-
-	printf("number of cycle = %d \n", *totalTime);
+		hipDeviceSynchronize();
+		hipMemcpy(totalTime, totalTime_d, sizeof(clock_t), hipMemcpyHostToDevice);
+		total_cycle += *totalTime;
+	}
+	printf("number of cycle = %d \n", total_cycle/1000);
 
 
 	free(totalTime);
